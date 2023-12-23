@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Rampastring.Tools;
 using Rampastring.XNAUI;
 using System;
 using TSMapEditor.GameMath;
@@ -107,9 +108,11 @@ namespace TSMapEditor.UI.CursorActions
                     }
                 }
             }
-
+#if WINFORMS
             System.Windows.Forms.Clipboard.SetData(Constants.ClipboardMapDataFormatValue, copiedMapData.Serialize());
-
+#else
+            Logger.Log("No copy/paste from clipboard on Linux yet, sorry!");
+#endif
             ExitAction();
         }
 

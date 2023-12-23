@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
 using System;
@@ -208,17 +208,25 @@ namespace TSMapEditor.UI
             InitialDisplayModeSet = true;
 
             Game.Window.AllowUserResizing = true;
+#if WINFORMS
             var form = (System.Windows.Forms.Form)System.Windows.Forms.Form.FromHandle(Game.Window.Handle);
             form.MaximizeBox = false;
 
             var screen = System.Windows.Forms.Screen.FromHandle(Game.Window.Handle);
-            int width = screen.Bounds.Width - 300;
-            int height = screen.Bounds.Height - 200;
+            int screenWidth = screen.Bounds.Width;
+            int screenHeight = screen.Bounds.Height;
+#else
+            int screenWidth = GraphicsDevice.DisplayMode.Width;
+            int screenHeight = GraphicsDevice.DisplayMode.Height;
+#endif
+            int width = screenWidth - 300;
+            int height = screenHeight - 200;
+
             bool borderless = UserSettings.Instance.FullscreenWindowed;
             if (borderless)
             {
-                width = screen.Bounds.Width;
-                height = screen.Bounds.Height;
+                width = screenWidth;
+                height = screenHeight;
             }
 
             WindowManager.InitGraphicsMode(width, height, borderless);
@@ -465,7 +473,9 @@ namespace TSMapEditor.UI
             overlayPlacementAction.OverlayTypeChanged -= OverlayPlacementAction_OverlayTypeChanged;
 
             WindowManager.GameClosing -= WindowManager_GameClosing;
+#if WINFORMS
             WindowManager.WindowSizeChangedByUser -= WindowManager_WindowSizeChangedByUser;
+#endif
             KeyboardCommands.Instance.ToggleFullscreen.Triggered -= ToggleFullscreen_Triggered;
 
             Disable();

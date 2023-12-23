@@ -1,0 +1,1 @@
+dotnet publish MapEditorLauncher/MapEditorLauncher.csproj -c LinuxRelease -p:PublishSingleFile=true -p:PublishTrimmed=false -p:IncludeNativeLibrariesForSelfExtract=true -p:CopyOutputSymbolsToPublishDirectory=false -p:DisableWinExeOutputInference=true -r linux-x64 --self-contained=false

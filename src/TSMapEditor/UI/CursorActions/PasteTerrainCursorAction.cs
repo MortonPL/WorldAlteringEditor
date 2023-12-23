@@ -1,4 +1,4 @@
-﻿using Rampastring.Tools;
+using Rampastring.Tools;
 using System;
 using System.Collections.Generic;
 using Rampastring.XNAUI.Input;
@@ -84,6 +84,7 @@ namespace TSMapEditor.UI.CursorActions
 
             originLevelOffset = 0;
 
+#if WINFORMS
             if (!System.Windows.Forms.Clipboard.ContainsData(Constants.ClipboardMapDataFormatValue))
             {
                 Logger.Log(nameof(PasteTerrainCursorAction) + ": invalid clipboard data format, exiting action");
@@ -103,6 +104,10 @@ namespace TSMapEditor.UI.CursorActions
                 Logger.Log(nameof(PasteTerrainCursorAction) + ": exception when decoding data from clipboard, exiting action. Message: " + ex.Message);
                 ExitAction();
             }
+#else
+            Logger.Log("No copy/paste from clipboard on Linux yet, sorry!");
+            ExitAction();
+#endif
         }
 
         public override void PreMapDraw(Point2D cellCoords)

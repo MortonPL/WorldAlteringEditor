@@ -204,6 +204,7 @@ namespace TSMapEditor.UI
 
         private void ReadGameInstallDirectoryFromRegistry()
         {
+#if WINFORMS
             try
             {
                 RegistryKey key;
@@ -225,6 +226,7 @@ namespace TSMapEditor.UI
                 tbGameDirectory.Text = string.Empty;
                 Logger.Log("Failed to read game installation path from the Windows registry! Exception message: " + ex.Message);
             }
+#endif
         }
 
         private void TbGameDirectory_TextChanged(object sender, EventArgs e)
@@ -268,8 +270,9 @@ namespace TSMapEditor.UI
             if (fullscreenWindowed && !borderless)
                 throw new InvalidOperationException("Borderless= cannot be set to false if FullscreenWindowed= is enabled.");
 
+#if WINFORMS
             var gameForm = (System.Windows.Forms.Form)System.Windows.Forms.Form.FromHandle(Game.Window.Handle);
-
+#endif
             double renderScale = UserSettings.Instance.RenderScale.GetValue();
 
 

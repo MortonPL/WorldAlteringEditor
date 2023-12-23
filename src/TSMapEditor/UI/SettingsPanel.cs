@@ -4,7 +4,9 @@ using Rampastring.XNAUI.XNAControls;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+#if WINFORMS
 using System.Windows.Forms;
+#endif
 using TSMapEditor.GameMath;
 using TSMapEditor.Settings;
 
@@ -101,8 +103,13 @@ namespace TSMapEditor.UI
 
             const int MinWidth = 1024;
             const int MinHeight = 600;
+#if WINFORMS
             int MaxWidth = Screen.PrimaryScreen.Bounds.Width;
             int MaxHeight = Screen.PrimaryScreen.Bounds.Height;
+#else
+            int MaxWidth = GraphicsDevice.DisplayMode.Width;
+            int MaxHeight = GraphicsDevice.DisplayMode.Height;
+#endif
 
             ddRenderScale = new XNADropDown(WindowManager);
             ddRenderScale.Name = nameof(ddRenderScale);

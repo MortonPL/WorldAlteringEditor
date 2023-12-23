@@ -1,5 +1,11 @@
-﻿using System;
+﻿using Rampastring.Tools;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+#if WINFORMS
 using System.Windows.Forms;
+#endif
 using TSMapEditor.Rendering;
 
 namespace TSMapEditor
@@ -15,14 +21,17 @@ namespace TSMapEditor
         static void Main(string[] args)
         {
             Program.args = args;
-
+#if WINFORMS
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             Application.ThreadException += Application_ThreadException;
+#endif
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            Environment.CurrentDirectory = Application.StartupPath.Replace('\\', '/');
+            DirectoryInfo gameDirectory = SafePath.GetDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
+            Environment.CurrentDirectory = gameDirectory.FullName;
+
             new GameClass().Run();
         }
 
@@ -38,12 +47,24 @@ namespace TSMapEditor
 
         private static void HandleException(Exception ex)
         {
-            MessageBox.Show("The map editor failed to launch.\r\n\r\nReason: " + ex.Message + "\r\n\r\n Stack trace: " + ex.StackTrace);
+            string message = "The map editor failed to launch.\r\n\r\nReason: " + ex.Message + "\r\n\r\n Stack trace: " + ex.StackTrace;
+#if WINFORMS
+            MessageBox.Show(message);
+#else
+            Logger.Log(message);
+            Console.WriteLine(message);
+            Process.Start(new ProcessStartInfo {
+                FileName = Environment.CurrentDirectory + "/MapEditorLog.log",
+                UseShellExecute = true
+            });
+#endif
         }
 
         public static void DisableExceptionHandler()
         {
+#if WINFORMS
             Application.ThreadException -= Application_ThreadException;
+#endif
             AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
         }
     }

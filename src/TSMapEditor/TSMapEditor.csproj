@@ -1,19 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <OutputType>WinExe</OutputType>
     <AssemblyName>WorldAlteringEditor</AssemblyName>
     <Deterministic>false</Deterministic>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <Configurations>WindowsDebug;WindowsRelease;LinuxDebug;LinuxRelease</Configurations>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(Configuration.Contains(Linux)) ">
+    <TargetFramework>net7.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseWindowsForms>false</UseWindowsForms>
+    <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(Configuration.Contains(Windows)) ">
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  <PropertyGroup Condition=" $(Configuration.Contains(Debug)) ">
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
@@ -24,6 +32,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>editoricon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants Condition="$(Configuration.Contains(Windows))">$(DefineConstants);WINFORMS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Config\Scripts\Apply Animated Water.cs" />
@@ -407,11 +418,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
     <PackageReference Include="Rampastring.Tools" Version="2.0.5" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
-    <PackageReference Include="Rampastring.XNAUI.WindowsDX" Version="2.3.19" />
     <PackageReference Include="Westwind.Scripting" Version="1.3.3" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" Condition="$(Configuration.Contains(Windows))" />
+    <PackageReference Include="Rampastring.XNAUI.WindowsDX" Version="2.3.19" Condition="$(Configuration.Contains(Windows))" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" Condition="$(Configuration.Contains(Linux))" />
+    <PackageReference Include="Rampastring.XNAUI.UniversalGL" Version="2.3.19" Condition="$(Configuration.Contains(Linux))" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\ToolIcons\" />

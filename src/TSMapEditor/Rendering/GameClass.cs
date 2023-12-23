@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -27,6 +28,7 @@ namespace TSMapEditor.Rendering
         {
 #if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += (s, e) => HandleUnhandledException((Exception)e.ExceptionObject);
+#if WINFORMS
             Application.ThreadException += (s, e) => HandleUnhandledException(e.Exception);
 #endif
             Program.DisableExceptionHandler();
@@ -76,10 +78,20 @@ namespace TSMapEditor.Rendering
 
             Logger.Log("Exiting.");
 
-            windowManager?.HideWindow();
-            System.Windows.Forms.MessageBox.Show("The map editor has crashed." + Environment.NewLine + Environment.NewLine +
+            var message = "The map editor has crashed." + Environment.NewLine + Environment.NewLine +
                 "Exception information logged into except.txt:" + Environment.NewLine + Environment.NewLine +
-                sb.ToString());
+                sb.ToString();
+#if WINFORMS
+            windowManager?.HideWindow();
+            System.Windows.Forms.MessageBox.Show(message);
+#else
+            Console.WriteLine(message);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = Environment.CurrentDirectory + "/MapEditorLog.log",
+                UseShellExecute = true
+            });
+#endif
 
             Environment.Exit(255);
         }
@@ -127,7 +139,9 @@ namespace TSMapEditor.Rendering
 
             windowManager.SetRenderResolution(menuRenderWidth, menuRenderHeight);
             windowManager.CenterOnScreen();
+#if WINFORMS
             windowManager.Cursor.LoadNativeCursor(Environment.CurrentDirectory + DSC + "Content" + DSC + "cursor.cur");
+#endif
             windowManager.SetBorderlessMode(false);
 
             Components.Add(windowManager);
