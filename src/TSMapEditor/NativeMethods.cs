@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 
 namespace TSMapEditor
@@ -33,9 +33,13 @@ namespace TSMapEditor
 
         public static int GetScreenDPI()
         {
+#if WINFORMS
             // This function currently only works on Windows
             IntPtr hdc = GetDC(IntPtr.Zero);
             return GetDeviceCaps(hdc, LOGPIXELSX);
+#else
+            return 96;
+#endif
         }
 
         public static void CreateConsole()
