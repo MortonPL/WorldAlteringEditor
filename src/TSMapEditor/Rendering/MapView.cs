@@ -1279,6 +1279,17 @@ namespace TSMapEditor.Rendering
             base.OnMouseScrolled();
         }
 
+        public override void OnMouseLeave()
+        {
+            if (isRotatingObject)
+            {
+                UpdateRotatedObjectFacing();
+                isRotatingObject = false;
+            }
+
+            base.OnMouseLeave();
+        }
+
         public override void OnMouseOnControl()
         {
             if (CursorAction == null && (isDraggingObject || isRotatingObject))
@@ -1312,6 +1323,7 @@ namespace TSMapEditor.Rendering
                     }
                     else if (isRotatingObject)
                     {
+                        UpdateRotatedObjectFacing();
                         isRotatingObject = false;
                     }
                 }
@@ -1593,33 +1605,36 @@ namespace TSMapEditor.Rendering
                 endDrawPoint = endDrawPoint.ScaleBy(Camera.ZoomLevel);
 
                 DrawLine(startDrawPoint.ToXNAVector(), endDrawPoint.ToXNAVector(), lineColor, 1);
-
-                if (draggedOrRotatedObject.IsTechno())
-                {
-                    var techno = (TechnoBase)draggedOrRotatedObject;
-                    Point2D point = tileUnderCursor.CoordsToPoint() - draggedOrRotatedObject.Position;
-
-                    float angle = point.Angle() + ((float)Math.PI / 2.0f);
-                    if (angle > (float)Math.PI * 2.0f)
-                    {
-                        angle = angle - ((float)Math.PI * 2.0f);
-                    }
-                    else if (angle < 0f)
-                    {
-                        angle += (float)Math.PI * 2.0f;
-                    }
-
-                    float percent = angle / ((float)Math.PI * 2.0f);
-                    byte facing = (byte)Math.Ceiling(percent * (float)byte.MaxValue);
-
-                    techno.Facing = facing;
-                    AddRefreshPoint(techno.Position, 2);
-                }
             }
             else
             {
                 DrawTileCursor();
             }
+        }
+
+        private void UpdateRotatedObjectFacing()
+        {
+            if (!draggedOrRotatedObject.IsTechno())
+                return;
+
+            var techno = (TechnoBase)draggedOrRotatedObject;
+            Point2D point = tileUnderCursor.CoordsToPoint() - draggedOrRotatedObject.Position;
+
+            float angle = point.Angle() + ((float)Math.PI / 2.0f);
+            if (angle > (float)Math.PI * 2.0f)
+            {
+                angle = angle - ((float)Math.PI * 2.0f);
+            }
+            else if (angle < 0f)
+            {
+                angle += (float)Math.PI * 2.0f;
+            }
+
+            float percent = angle / ((float)Math.PI * 2.0f);
+            byte facing = (byte)Math.Ceiling(percent * (float)byte.MaxValue);
+
+            techno.Facing = facing;
+            AddRefreshPoint(techno.Position, 2);
         }
 
         private void DrawTileCursor()
