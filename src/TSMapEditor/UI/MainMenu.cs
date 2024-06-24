@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Rampastring.Tools;
 using Rampastring.XNAUI;
 using Rampastring.XNAUI.XNAControls;
@@ -43,6 +43,14 @@ namespace TSMapEditor.UI
         {
             Name = nameof(MainMenu);
             Width = 570;
+
+            UISettings.ActiveSettings.TextColor = new Color(192, 192, 192);
+            UISettings.ActiveSettings.AltColor = new Color(192, 192, 192);
+            UISettings.ActiveSettings.PanelBackgroundColor = new Color(0, 0, 0, 128);
+            UISettings.ActiveSettings.PanelBorderColor = new Color(128, 0, 0);
+            UISettings.ActiveSettings.FocusColor = new Color(128, 0, 0);
+            UISettings.ActiveSettings.ButtonTextColor = new Color(255, 0, 20);
+            ((CustomUISettings)UISettings.ActiveSettings).ButtonTertiaryBackgroundColor = new Color(128, 0, 0);
 
             var lblGameDirectory = new XNALabel(WindowManager);
             lblGameDirectory.Name = nameof(lblGameDirectory);
