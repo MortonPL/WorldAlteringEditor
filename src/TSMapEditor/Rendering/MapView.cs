@@ -119,6 +119,8 @@ namespace TSMapEditor.Rendering
 
         private Stopwatch refreshStopwatch;
 
+        private Texture2D Background { get; set; }
+
         private ulong refreshIndex;
 
         private AircraftRenderer aircraftRenderer;
@@ -170,6 +172,9 @@ namespace TSMapEditor.Rendering
 
             MapWideOverlay = new MapWideOverlay();
             EditorState.MapWideOverlayExists = MapWideOverlay.HasTexture;
+
+            if (AssetLoader.AssetExists("background.png"))
+                Background = AssetLoader.LoadTexture("background.png");
 
             RefreshRenderTargets();
             CreateDepthStencilStates();
@@ -1445,6 +1450,9 @@ namespace TSMapEditor.Rendering
             CalculateMapRenderRectangles();
 
             DrawPerFrameTransparentElements(technoUnderCursor);
+
+            if (Background != null)
+                Renderer.DrawTexture(Background, Background.Bounds, new Rectangle(0, 0, Width, Height), Color.White);
 
             DrawWorld();
 
