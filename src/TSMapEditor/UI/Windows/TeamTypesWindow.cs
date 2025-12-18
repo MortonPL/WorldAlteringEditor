@@ -209,8 +209,11 @@ namespace TSMapEditor.UI.Windows
         {
             if (Visible)
             {
-                ListTeamTypes();
-                SelectTeamType(editedTeamType);
+                AddCallback(() =>
+                {
+                    ListTeamTypes();
+                    SelectTeamType(editedTeamType);
+                });
             }
         }
 

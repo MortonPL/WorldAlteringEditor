@@ -153,8 +153,11 @@ namespace TSMapEditor.UI.Windows
         {
             if (Visible)
             {
-                ListTaskForces();
-                SelectTaskForce(editedTaskForce);
+                AddCallback(() =>
+                {
+                    ListTaskForces();
+                    SelectTaskForce(editedTaskForce);
+                });
             }
         }
 
